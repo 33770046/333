@@ -168,7 +168,7 @@ class ClassScheduleApp:
         
         # 第一行：控制按钮
         control_frame = tk.Frame(self.root, bg='white', height=40)
-        control_frame.pack(pady=(5, 0), padx=15, fill='x')
+        control_frame.pack(pady=(0, 0), padx=15, fill='x')
         
         # 在右侧平放三个按钮
         button_frame = tk.Frame(control_frame, bg='white')
@@ -192,32 +192,30 @@ class ClassScheduleApp:
                              width=5, height=1)
         close_btn.pack(side='left', padx=(5, 0))
         
-        # 第二行：日期
-        top_frame1 = tk.Frame(self.root, bg='white')
-        top_frame1.pack(pady=(0, 2), padx=15, fill='x')
+        # 第二行：日期和星期合并为一行
+        date_weekday_frame = tk.Frame(self.root, bg='white')
+        date_weekday_frame.pack(pady=(0, 0), padx=15, fill='x')
         
-        self.date_label = tk.Label(top_frame1, text="", 
-                                  font=("Microsoft YaHei", 24, "bold"),
-                                  bg='white', fg='black', anchor='e')
-        self.date_label.pack(fill='x')
+        # 日期标签（左侧）
+        self.date_label = tk.Label(date_weekday_frame, text="", 
+                                  font=("Microsoft YaHei", 18, "bold"),
+                                  bg='white', fg='black', anchor='w')
+        self.date_label.pack(side='left')
+        
+        # 星期标签（右侧）
+        self.weekday_label = tk.Label(date_weekday_frame, text="", 
+                                     font=("Microsoft YaHei", 18, "bold"),
+                                     bg='white', fg='black', anchor='e')
+        self.weekday_label.pack(side='right')
         
         # 第三行：时间
-        top_frame2 = tk.Frame(self.root, bg='white')
-        top_frame2.pack(pady=(2, 2), padx=15, fill='x')
+        time_frame = tk.Frame(self.root, bg='white')
+        time_frame.pack(pady=(0, 0), padx=15, fill='x')
         
-        self.time_label = tk.Label(top_frame2, text="", 
+        self.time_label = tk.Label(time_frame, text="", 
                                   font=("Microsoft YaHei", 60, "bold"),
                                   bg='white', fg='black', anchor='e')
         self.time_label.pack(fill='x')
-        
-        # 第四行：星期
-        top_frame3 = tk.Frame(self.root, bg='white')
-        top_frame3.pack(pady=(2, 5), padx=15, fill='x')
-        
-        self.weekday_label = tk.Label(top_frame3, text="", 
-                                     font=("Microsoft YaHei", 24, "bold"),
-                                     bg='white', fg='black', anchor='e')
-        self.weekday_label.pack(fill='x')
         
         # 创建课程表格
         self.create_schedule_table()
@@ -240,7 +238,7 @@ class ClassScheduleApp:
         
         # 获取当前星期的课程表
         weekday_english = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-        current_weekday_index = (datetime.now().weekday() + 1) % 7
+        current_weekday_index = datetime.now().weekday()  # 直接使用 weekday()
         current_weekday_english = weekday_english[current_weekday_index]
         
         class_schedule = self.settings["schedules"].get(current_weekday_english, [])
@@ -251,10 +249,10 @@ class ClassScheduleApp:
         # 直接在主框架中创建课程标签
         for i, course in enumerate(class_schedule):
             course_label = tk.Label(self.main_frame, text=course,
-                                   font=("Microsoft YaHei", 30, "bold"),
+                                   font=("Microsoft YaHei", 28, "bold"),
                                    bg='white', fg='black', height=1,
                                    anchor='e', justify='right')
-            course_label.pack(fill='x', pady=0)
+            course_label.pack(fill='x', pady=(0, 0))
             print(f"创建课程标签 {i+1}: {course}")
         
         print("课程列表创建完成")
@@ -275,7 +273,7 @@ class ClassScheduleApp:
             # 正常模式：显示完整内容，包括课程表，恢复用户设置的透明度
             if self.main_frame and not self.main_frame.winfo_ismapped():
                 print("显示课程表")
-                self.main_frame.pack(fill='both', expand=True, padx=15, pady=(0, 10))  # 显示课程表
+                self.main_frame.pack(fill='both', expand=True, padx=15, pady=(0, 0))  # 显示课程表
             self.root.attributes('-alpha', self.user_transparency)  # 恢复用户设置的透明度
             self.current_topmost_state = False
             print(f"切换到正常模式：显示课程表，透明度{self.user_transparency}")
@@ -498,7 +496,7 @@ class ClassScheduleApp:
             entries = []
             for i in range(15):
                 row_frame = tk.Frame(tab_frame, bg='white')
-                row_frame.pack(fill='x', pady=0)
+                row_frame.pack(fill='x', pady=2)
                 
                 tk.Label(row_frame, text=f"第{i+1}节:", font=("Microsoft YaHei", 9), width=8, anchor='w').pack(side='left')
                 entry = tk.Entry(row_frame, font=("Microsoft YaHei", 9), width=20)
@@ -657,7 +655,7 @@ class ClassScheduleApp:
                 # 新增：如果不在置顶状态且课程表没有显示，则显示课程表
                 elif not should_be_topmost and self.main_frame and not self.main_frame.winfo_ismapped():
                     print("确保课程表显示")
-                    self.main_frame.pack(fill='both', expand=True, padx=15, pady=(0, 10))
+                    self.main_frame.pack(fill='both', expand=True, padx=15, pady=(0, 0))
                     
         except Exception as e:
             print(f"检查置顶状态时出错: {e}")
@@ -688,7 +686,7 @@ class ClassScheduleApp:
         date_str = now.strftime("%Y年%m月%d日")
         time_str = now.strftime("%H:%M:%S")
         weekdays = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
-        weekday_num = (now.weekday() + 1) % 7
+        weekday_num = now.weekday()  # 直接使用 weekday()，不需要 +1
         weekday_str = weekdays[weekday_num]
         return date_str, time_str, weekday_str
     
@@ -699,7 +697,7 @@ class ClassScheduleApp:
         self.weekday_label.config(text=weekday_str)
         
         # 检查星期是否变化，如果变化则更新课程表
-        current_weekday_index = (datetime.now().weekday() + 1) % 7
+        current_weekday_index = datetime.now().weekday()  # 直接使用 weekday()
         if self.current_weekday != current_weekday_index:
             self.current_weekday = current_weekday_index
             self.create_course_list()
