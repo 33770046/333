@@ -1,2 +1,8 @@
 # 333
 Seewo桌面课程时间显示器
+在class_schedule_settings.json中你可以设置此应用字体的大小等
+course_font_size为课程表字体大小
+date_font_size为日期、星期字体大小（好像不可用）
+time_font_size为时间字体大小（好像不可用）
+topmost_time_ranges为置顶时间段设置
+transparency为非置顶的透明度设置
